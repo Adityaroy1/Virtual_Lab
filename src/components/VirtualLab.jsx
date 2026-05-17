@@ -398,7 +398,7 @@ function SimulatorPanel() {
   );
 }
 
-const AIM_CONTENT = () => (
+const INTRO_CONTENT = () => (
   <div>
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: "2rem" }}>
       {[
@@ -588,14 +588,11 @@ const REFERENCES = () => (
 
 export default function App({ onBack }) {
   const [activeSection, setActiveSection] = useState("Introduction");
-  const [completed, setCompleted] = useState(new Set());
   const [isNavOpen, setIsNavOpen] = useState(false);
   const sectionRef = useRef(null);
 
-  function markDone(section) { setCompleted(p => new Set([...p, section])); }
-
   const sections = {
-    Introduction: { component: <AIM_CONTENT />, desc: "Experiment objectives" },
+    Introduction: { component: <INTRO_CONTENT />, desc: "Experiment objectives" },
     Theory: { component: <THEORY_CONTENT />, desc: "Mathematical background" },
     Pretest: { component: <Quiz questions={pretestQs} title="Pre-Test" />, desc: "Test prior knowledge" },
     Simulator: { component: <SimulatorPanel />, desc: "Interactive computation" },
@@ -689,9 +686,8 @@ export default function App({ onBack }) {
         <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: isNavOpen ? "1.5rem 0" : "0", display: "flex", flexDirection: "column", scrollbarWidth: "none", msOverflowStyle: "none", opacity: isNavOpen ? 1 : 0, visibility: isNavOpen ? "visible" : "hidden", transition: "all 0.3s ease" }}>
           <style>{`aside div::-webkit-scrollbar { display: none; }`}</style>
           <p style={{ margin: "0 0 8px 24px", fontWeight: 600, fontSize: 11, color: COLORS.muted, textTransform: "uppercase", letterSpacing: 1 }}>Sections</p>
-          {NAV_ITEMS.map((item, idx) => {
+          {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item;
-            const isDone = completed.has(item);
             return (
               <button 
                 key={item} 
@@ -705,7 +701,6 @@ export default function App({ onBack }) {
                 }}
               >
                 <div style={{ width: isNavOpen ? "150px" : "0px", overflow: "hidden", transition: "all 0.3s ease", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "12px" }}>
-                  {isDone && <span style={{ color: "#34d399", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>✓</span>}
                   <div>
                     <p style={{ margin: 0, fontSize: 14, fontWeight: isActive ? 600 : 400, color: isActive ? COLORS.accent : COLORS.text }}>{item}</p>
                     <p style={{ margin: "2px 0 0", fontSize: 11, color: COLORS.muted }}>{sections[item]?.desc}</p>
@@ -721,16 +716,6 @@ export default function App({ onBack }) {
       <div style={{ flex: 1, position: "relative", zIndex: 10, overflowY: "auto", display: "flex", flexDirection: "column" }}>
         <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto", width: "100%" }}>
           
-          {/* Top Progress Bar */}
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "2rem" }}>
-            <div style={{ display: "flex", gap: 12, fontSize: 13, color: COLORS.muted, alignItems: 'center' }}>
-              <span>{completed.size}/{Object.keys(sections).length} completed</span>
-              <div style={{ width: 100, height: 6, borderRadius: 4, background: "rgba(255,255,255,0.1)", overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${completed.size / Object.keys(sections).length * 100}%`, background: COLORS.accentHover, transition: "width 0.4s ease" }} />
-              </div>
-            </div>
-          </div>
-
           {/* Main Card */}
           <main ref={sectionRef} style={{ background: "rgba(255, 255, 255, 0.02)", backdropFilter: "blur(16px)", borderRadius: 14, border: `1px solid ${COLORS.borderLight}`, padding: "2.5rem", minHeight: "600px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
@@ -738,12 +723,6 @@ export default function App({ onBack }) {
                 <h2 style={{ margin: 0, fontWeight: 700, fontSize: 24, letterSpacing: "-0.02em" }}>{activeSection}</h2>
                 <p style={{ margin: "4px 0 0", color: COLORS.muted, fontSize: 14 }}>{sections[activeSection]?.desc}</p>
               </div>
-              {/* {!completed.has(activeSection) && (
-                <button onClick={() => markDone(activeSection)} style={{ padding: "8px 16px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, cursor: "pointer", fontSize: 13, fontWeight: 500, transition: "background 0.15s" }}>Mark complete ✓</button>
-              )}
-              {completed.has(activeSection) && (
-                <span style={{ padding: "8px 16px", borderRadius: 8, background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", color: "#34d399", fontSize: 13, fontWeight: 600 }}>✓ Completed</span>
-              )} */}
             </div>
             
             <div style={{ borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: "1.5rem" }}>
@@ -752,7 +731,7 @@ export default function App({ onBack }) {
             
             <div style={{ borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: "1.5rem", marginTop: "2.5rem", display: "flex", justifyContent: "space-between" }}>
               <button onClick={() => { const idx = NAV_ITEMS.indexOf(activeSection); if (idx > 0) setActiveSection(NAV_ITEMS[idx-1]); }} disabled={NAV_ITEMS.indexOf(activeSection) === 0} style={{ padding: "10px 20px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.text, cursor: NAV_ITEMS.indexOf(activeSection) === 0 ? "not-allowed" : "pointer", fontSize: 14, opacity: NAV_ITEMS.indexOf(activeSection) === 0 ? 0.4 : 1, transition: "background 0.15s" }}>← Previous</button>
-              <button onClick={() => { markDone(activeSection); const idx = NAV_ITEMS.indexOf(activeSection); if (idx < NAV_ITEMS.length - 1) setActiveSection(NAV_ITEMS[idx+1]); }} disabled={NAV_ITEMS.indexOf(activeSection) === NAV_ITEMS.length - 1} style={{ padding: "10px 20px", borderRadius: 8, border: "none", background: COLORS.accentHover, color: "#fff", cursor: NAV_ITEMS.indexOf(activeSection) === NAV_ITEMS.length-1 ? "not-allowed" : "pointer", fontSize: 14, fontWeight: 600, opacity: NAV_ITEMS.indexOf(activeSection) === NAV_ITEMS.length-1 ? 0.4 : 1, transition: "background 0.15s" }}>Next → </button>
+              <button onClick={() => { const idx = NAV_ITEMS.indexOf(activeSection); if (idx < NAV_ITEMS.length - 1) setActiveSection(NAV_ITEMS[idx+1]); }} disabled={NAV_ITEMS.indexOf(activeSection) === NAV_ITEMS.length - 1} style={{ padding: "10px 20px", borderRadius: 8, border: "none", background: COLORS.accentHover, color: "#fff", cursor: NAV_ITEMS.indexOf(activeSection) === NAV_ITEMS.length-1 ? "not-allowed" : "pointer", fontSize: 14, fontWeight: 600, opacity: NAV_ITEMS.indexOf(activeSection) === NAV_ITEMS.length-1 ? 0.4 : 1, transition: "background 0.15s" }}>Next → </button>
             </div>
           </main>
 
