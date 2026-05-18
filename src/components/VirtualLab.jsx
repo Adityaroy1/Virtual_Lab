@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const NAV_ITEMS = ["Introduction","Theory","Simulator","Test","References"];
+const NAV_ITEMS = ["Introduction","Theory","Simulator","Test","References","About Us"];
 
 // Updated colors to match the landing page theme
 const COLORS = {
@@ -624,6 +624,38 @@ const REFERENCES = () => (
   </div>
 );
 
+const ABOUT_US_CONTENT = () => (
+  <div>
+    <h3 style={{ fontWeight: 600, fontSize: 18, marginTop: 0, color: COLORS.text, marginBottom: "1rem" }}>Faculty Advisor</h3>
+    <div style={{ display: "flex", gap: 14, padding: "16px", borderRadius: 10, border: `1px solid ${COLORS.border}`, background: COLORS.surface, marginBottom: "2.5rem" }}>
+      <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(16, 185, 129, 0.15)", color: "#34d399", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, flexShrink: 0 }}>👨‍🏫</div>
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <p style={{ margin: "0 0 4px", fontWeight: 600, fontSize: 16, color: COLORS.text }}>Dr.Neha Sharma</p>
+        <p style={{ margin: "0 0 4px", fontSize: 13, color: COLORS.accent }}>Mathematical Calculus Faculty and Guide</p>
+        <p style={{ margin: 0, fontSize: 13, color: COLORS.muted }}>Department of AS&H, Pimpri Chinchwad College of Engineering</p>
+      </div>
+    </div>
+
+    <h3 style={{ fontWeight: 600, fontSize: 18, marginTop: 0, color: COLORS.text, marginBottom: "1rem" }}>Development Team</h3>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 16 }}>
+      {[
+        { name: "Prashant Khairgave", role: "Frontend Developer", emoji: "👨‍💻" },
+        { name: "Aditya Roy", role: "UI/UX Designer", emoji: "👩‍💻" },
+        { name: "Abheer Dhanani", role: "Content Integrator", emoji: "👨‍💻" },
+      ].map(dev => (
+        <div key={dev.name} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surface }}>
+          <div style={{ width: 50, height: 50, borderRadius: "50%", background: "rgba(129, 140, 248, 0.15)", color: COLORS.accent, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, flexShrink: 0 }}>{dev.emoji}</div>
+          <div>
+            <p style={{ margin: "0 0 4px", fontWeight: 600, fontSize: 15, color: COLORS.text }}>{dev.name}</p>
+            <p style={{ margin: 0, fontSize: 13, color: COLORS.muted }}>{dev.role}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+
 export default function App({ onBack, initialSection = "introduction" }) {
   const [activeSection, setActiveSection] = useState(initialSection);
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -636,6 +668,7 @@ export default function App({ onBack, initialSection = "introduction" }) {
     Simulator: { component: <SimulatorPanel />, desc: "Interactive computation" },
     Test: { component: <Quiz questions={posttestQs} title="Test" />, desc: "Evaluate your learning" },
     References: { component: <REFERENCES />, desc: "Further reading" },
+    "About Us": { component: <ABOUT_US_CONTENT />, desc: "Meet the team" },
   };
 
   return (
