@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
 const navigation = [
-  { name: 'Aim', href: '#' },
-  { name: 'Theory', href: '#' },
-  { name: 'Simulator', href: '#' },
-  { name: 'References', href: '#' },
+  { name: 'Introduction' },
+  { name: 'Theory' },
+  { name: 'Simulator' },
+  { name: 'References'},
+  { name: 'About Us' },
 ]
 
 // Small nav logo (header) — Georgia serif beta + gamma text, #c4b5c4 colour
@@ -33,8 +34,8 @@ function BetaGammaLogoLarge() {
       onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)' }}
       aria-label="Beta Gamma logo"
     >
-      <text x="36" y="50" fontFamily="Georgia, serif" fontSize="65" fill="#c4b5c4">&#946;</text>
-      <text x="54" y="53" fontFamily="Georgia, serif" fontSize="70" fontStyle="italic" fill="#c4b5c4" fillOpacity="0.9">&#947;</text>
+      <text x="36" y="50" fontFamily="Georgia, serif" fontSize="70" fill="#c4b5c4">&#946;</text>
+      <text x="54" y="53" fontFamily="Georgia, serif" fontSize="75" fontStyle="italic" fill="#c4b5c4" fillOpacity="0.9">&#947;</text>
     </svg>
   )
 }
@@ -92,16 +93,18 @@ export default function VirtualLabLanding({ onEnter }) {
 
         <nav style={{ display: 'flex', gap: '3rem' }}>
           {navigation.map(item => (
-            <a key={item.name} href={item.href} style={{
-              color: 'white', textDecoration: 'none', fontSize: '14px',
-              fontWeight: 600, opacity: 0.9, transition: 'opacity 0.15s',
-            }}
-              onMouseOver={e => { e.target.style.opacity = 1 }}
-              onMouseOut={e => { e.target.style.opacity = 0.9 }}
-            >
-              {item.name}
-            </a>
-          ))}
+             <button key={item.name} onClick={() => onEnter(item.name)} style={{
+              color: 'white', background: 'none', border: 'none',
+              fontSize: '14px', fontWeight: 600, opacity: 0.9,
+              cursor: 'pointer', transition: 'opacity 0.15s',
+              fontFamily: 'inherit',
+          }}
+       onMouseOver={e => { e.target.style.opacity = 1 }}
+        onMouseOut={e => { e.target.style.opacity = 0.9 }}
+      >
+        {item.name}
+         </button>
+    ))}
         </nav>
 
         <a href="#" style={{ color: 'white', textDecoration: 'none', fontSize: '14px', fontWeight: 600, opacity: 0.85 }}>
@@ -143,7 +146,7 @@ export default function VirtualLabLanding({ onEnter }) {
         </div>
 
         {/* Announcement badge */}
-        <div style={{
+        {/* <div style={{
           display: 'inline-flex', alignItems: 'center', gap: '8px',
           padding: '6px 16px', borderRadius: '999px',
           border: '1px solid rgba(255,255,255,0.15)',
@@ -154,7 +157,7 @@ export default function VirtualLabLanding({ onEnter }) {
           <a href="#" style={{ color: '#818cf8', fontWeight: 600, textDecoration: 'none' }}>
             Read more &#8594;
           </a>
-        </div>
+        </div> */}
 
         {/* Main headline */}
         <h2 style={{
@@ -177,7 +180,7 @@ export default function VirtualLabLanding({ onEnter }) {
 
         {/* CTAs */}
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button onClick={onEnter} style={{
+          <button onClick={() => onEnter('Introduction')} style={{
             background: '#6366f1', color: 'white',
             padding: '12px 28px', borderRadius: '8px',
             fontWeight: 600, fontSize: '15px',
@@ -186,11 +189,11 @@ export default function VirtualLabLanding({ onEnter }) {
             onMouseOver={e => { e.currentTarget.style.background = '#818cf8' }}
             onMouseOut={e => { e.currentTarget.style.background = '#6366f1' }}
           >
-            Start Experiment
+            Start Exploring
           </button>
-          <a href="#" style={{ color: 'white', fontSize: '15px', fontWeight: 600, textDecoration: 'none', opacity: 0.85 }}>
+          {/* <a href="#" style={{ color: 'white', fontSize: '15px', fontWeight: 600, textDecoration: 'none', opacity: 0.85 }}>
             Learn more &#8594;
-          </a>
+          </a> */}
         </div>
 
         {/* Decorative formula strip */}

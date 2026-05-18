@@ -4,10 +4,21 @@ import VirtualLab from './components/VirtualLab.jsx'
 
 export default function App() {
   const [page, setPage] = useState('landing')
+  const [initialSection, setInitialSection] = useState('Introduction')
 
-  if (page === 'lab') {
-    return <VirtualLab onBack={() => setPage('landing')} />
+  function handleEnter(section = 'Introduction') {
+    setInitialSection(section)
+    setPage('lab')
   }
 
-  return <LandingPage onEnter={() => setPage('lab')} />
+  if (page === 'lab') {
+    return (
+      <VirtualLab
+        initialSection={initialSection}
+        onBack={() => setPage('landing')}
+      />
+    )
+  }
+
+  return <LandingPage onEnter={handleEnter} />
 }

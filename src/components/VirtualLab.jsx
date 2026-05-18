@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const NAV_ITEMS = ["Introduction","Theory","Pretest","Simulator","Posttest","References"];
+const NAV_ITEMS = ["Introduction","Theory","Simulator","Test","References"];
 
 // Updated colors to match the landing page theme
 const COLORS = {
@@ -61,68 +61,96 @@ function lnGamma(z) {
   return 0.5 * Math.log(2 * Math.PI) + (z - 0.5) * Math.log(t) - t + Math.log(x);
 }
 
-const pretestQs = [
-  { q: "What is the Beta function B(m,n) defined as?", opts: ["∫₀¹ tᵐ⁻¹(1-t)ⁿ⁻¹ dt","∫₀∞ tⁿ⁻¹e⁻ᵗ dt","∫₀¹ tᵐ(1-t)ⁿ dt","None of these"], ans: 0 },
-  { q: "The Gamma function Γ(n) for positive integer n equals:", opts: ["n!","(n-1)!","n·(n-1)","2n"], ans: 1 },
-  { q: "Which is true about B(m,n)?", opts: ["B(m,n) = B(n,m)","B(m,n) ≠ B(n,m)","B(m,n) = m·n","B(m,n) = Γ(m+n)"], ans: 0 },
-  { q: "Γ(1/2) equals:", opts: ["1","√π","π","1/2"], ans: 1 },
-  { q: "The relation between Beta and Gamma is:", opts: ["B(m,n) = Γ(m)·Γ(n)/Γ(m+n)","B(m,n) = Γ(m+n)","B(m,n) = Γ(m)/Γ(n)","B(m,n) = Γ(m)·Γ(n)"], ans: 0 },
-  { q: "Γ(n+1) = ?", opts: ["n·Γ(n)","n!","Γ(n)-1","(n+1)·Γ(n)"], ans: 0 },
-  { q: "B(1,1) = ?", opts: ["0","1","2","∞"], ans: 1 },
-  { q: "The Beta function is also known as:", opts: ["Euler integral of the first kind","Euler integral of the second kind","Fourier integral","Laplace transform"], ans: 0 },
-  { q: "The Gamma function is an extension of which function?", opts: ["Logarithm","Factorial","Exponential","Trigonometric"], ans: 1 },
-  { q: "∫₀^(π/2) sin²θ cos²θ dθ can be expressed using Beta as:", opts: ["½ B(3/2, 3/2)","B(2,2)","B(1/2,1/2)","½ B(2,2)"], ans: 0 },
-];
+// const pretestQs = [
+//   { q: "What is the Beta function B(m,n) defined as?", opts: ["∫₀¹ tᵐ⁻¹(1-t)ⁿ⁻¹ dt","∫₀∞ tⁿ⁻¹e⁻ᵗ dt","∫₀¹ tᵐ(1-t)ⁿ dt","None of these"], ans: 0 },
+//   { q: "The Gamma function Γ(n) for positive integer n equals:", opts: ["n!","(n-1)!","n·(n-1)","2n"], ans: 1 },
+//   { q: "Which is true about B(m,n)?", opts: ["B(m,n) = B(n,m)","B(m,n) ≠ B(n,m)","B(m,n) = m·n","B(m,n) = Γ(m+n)"], ans: 0 },
+//   { q: "Γ(1/2) equals:", opts: ["1","√π","π","1/2"], ans: 1 },
+//   { q: "The relation between Beta and Gamma is:", opts: ["B(m,n) = Γ(m)·Γ(n)/Γ(m+n)","B(m,n) = Γ(m+n)","B(m,n) = Γ(m)/Γ(n)","B(m,n) = Γ(m)·Γ(n)"], ans: 0 },
+//   { q: "Γ(n+1) = ?", opts: ["n·Γ(n)","n!","Γ(n)-1","(n+1)·Γ(n)"], ans: 0 },
+//   { q: "B(1,1) = ?", opts: ["0","1","2","∞"], ans: 1 },
+//   { q: "The Beta function is also known as:", opts: ["Euler integral of the first kind","Euler integral of the second kind","Fourier integral","Laplace transform"], ans: 0 },
+//   { q: "The Gamma function is an extension of which function?", opts: ["Logarithm","Factorial","Exponential","Trigonometric"], ans: 1 },
+//   { q: "∫₀^(π/2) sin²θ cos²θ dθ can be expressed using Beta as:", opts: ["½ B(3/2, 3/2)","B(2,2)","B(1/2,1/2)","½ B(2,2)"], ans: 0 },
+// ];
+
 
 const posttestQs = [
-  { q: "Compute B(2,3):", opts: ["1/12","1/6","1/30","1/4"], ans: 0 },
-  { q: "Γ(5) = ?", opts: ["24","120","6","720"], ans: 0 },
-  { q: "Which integral form represents the Gamma function?", opts: ["∫₀∞ tⁿ⁻¹e⁻ᵗ dt","∫₀¹ tⁿ⁻¹(1-t)ⁿ⁻¹ dt","∫₀^π sinⁿt dt","∫₀∞ e⁻ᵗ dt"], ans: 0 },
-  { q: "B(m,n) in terms of Gamma where m=3, n=4 is:", opts: ["Γ(3)Γ(4)/Γ(7)","Γ(3)+Γ(4)","Γ(7)/Γ(3)","Γ(3)·Γ(4)"], ans: 0 },
-  { q: "Using the duplication formula, B(n,n) = ?", opts: ["π · 2^(1-2n) / Γ(2n)","Γ(n)²/Γ(2n)","Both are equivalent","None"], ans: 2 },
-  { q: "Γ(3/2) = ?", opts: ["√π/2","√π","3√π/2","π/2"], ans: 0 },
-  { q: "Which property is NOT true for the Beta function?", opts: ["B(m,n) = B(n,m)","B(m,n) = Γ(m)Γ(n)/Γ(m+n)","B(m,1) = 1/m","B(m,n) is always irrational"], ans: 3 },
-  { q: "The integral ∫₀¹ x³(1-x)⁴ dx equals:", opts: ["B(4,5)","B(3,4)","1/280","B(4,5) = 1/280"], ans: 3 },
-  { q: "Γ(1) = ?", opts: ["0","1","e","∞"], ans: 1 },
-  { q: "Which substitution converts B(m,n) to a trigonometric form?", opts: ["t = sin²θ","t = cosθ","t = tanθ","t = eθ"], ans: 0 },
+  { q: "Evaluate ∫₀^{∞} x⁷ e^{-2x²} dx", opts: ["3/16", "3/8", "1/16", "3/4"], ans: 0 },
+  { q: "Evaluate ∫₀^{∞} x⁹ e^{-2x²} dx", opts: ["3/16", "3/8", "3/4", "9/16"], ans: 1 },
+  { q: "Evaluate ∫₀^{∞} √y e^{-√y} dy", opts: ["1", "2", "1/2", "π"], ans: 1 },
+  { q: "Evaluate ∫₀^{1/2} x³ (1-4x²)^{1/3} dx", opts: ["1/60", "1/120", "1/240", "1/30"], ans: 1 },
+  { q: "Evaluate ∫₀^{1} (1-x³)^{-1/3} dx", opts: ["2π / 3√3", "π / 3√3", "2π / √3", "π / √3"], ans: 0 },
+  { q: "Evaluate ∫₀^{∞} dx / (1+x⁴)", opts: ["π / √2", "π / (2√2)", "π / 4", "π / (4√2)"], ans: 1 },
+  { q: "Evaluate ∫₀^{∞} x² dx / (1+x²)²", opts: ["π / 2", "π / 4", "π / 8", "π"], ans: 1 },
+  { q: "Evaluate ∫₀^{π/2} √(tan θ) dθ", opts: ["π / √2", "π / 2", "π / (2√2)", "π"], ans: 0 },
+  { q: "Evaluate ∫₀^{π/2} √(tan θ) dθ · ∫₀^{π/2} √(cot θ) dθ", opts: ["π² / 4", "π² / 2", "π²", "π / 2"], ans: 1 },
+  { q: "Evaluate ∫_{-1}^{1} (1+x)ᵐ (1-x)ⁿ dx", opts: ["2^{m+n} β(m,n)", "2^{m+n+1} β(m+1, n+1)", "β(m+1, n+1)", "2^{m+n} β(m+1, n+1)"], ans: 1 },
+  // { q: "Evaluate ∫₀^{∞} x^{m-1} / (a+bx)^{m+n} dx", opts: ["β(m,n) / (aᵐ bⁿ)", "β(m,n) / (aⁿ bᵐ)", "β(m+1,n+1) / (aⁿ bᵐ)", "β(m,n) / (a b)"], ans: 1 },
+  // { q: "By DUIS rule, evaluate ∫₀^{∞} e^{-ax} sin(x) / x dx", opts: ["tan⁻¹(a)", "cot⁻¹(a)", "sin⁻¹(a)", "log(a)"], ans: 1 },
+  // { q: "By DUIS rule, evaluate ∫₀^{∞} (e^{-ax} - e^{-bx}) / x dx", opts: ["log(a/b)", "log(b/a)", "a/b", "b/a"], ans: 1 },
+  // { q: "Evaluate ∫₀^{∞} log(1+ax²) / x² dx", opts: ["π√a", "πa", "π/2 √a", "2π√a"], ans: 0 },
+  // { q: "Evaluate ∫₀^{2} x³ √(2-x) dx", opts: ["16√2 β(4, 3/2)", "8√2 β(3, 3/2)", "16√2 β(3, 1/2)", "8 β(4, 3/2)"], ans: 0 },
+  // { q: "Evaluate ∫₀^{∞} x² / (1+x⁴)³ dx", opts: ["1/4 β(3/4, 9/4)", "1/2 β(3/4, 9/4)", "1/4 β(1/4, 5/4)", "1/2 β(1/4, 5/4)"], ans: 0 },
 ];
 
-function Quiz({ questions, title }) {
+function Quiz({ questions, title, randomizeCount }) {
+  const [activeQuestions, setActiveQuestions] = useState(() => {
+    if (randomizeCount) {
+      return [...questions].sort(() => 0.5 - Math.random()).slice(0, randomizeCount);
+    }
+    return questions;
+  });
+
   const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [answers, setAnswers] = useState([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [answers, setAnswers] = useState(Array(activeQuestions.length).fill(null));
+  const [tempSelect, setTempSelect] = useState(null);
   const [done, setDone] = useState(false);
 
-  const score = answers.filter((a, i) => a === questions[i].ans).length;
+  const score = answers.filter((a, i) => a !== null && a === activeQuestions[i].ans).length;
+  const answeredCount = answers.filter(a => a !== null).length;
 
   function handleSubmit() {
-    if (selected === null) return;
-    const newAns = [...answers, selected];
+    if (tempSelect === null) return;
+    const newAns = [...answers];
+    newAns[current] = tempSelect;
     setAnswers(newAns);
-    setSubmitted(true);
   }
 
   function handleNext() {
-    if (current < questions.length - 1) {
+    if (current < activeQuestions.length - 1) {
       setCurrent(current + 1);
-      setSelected(null);
-      setSubmitted(false);
+      setTempSelect(null);
     } else {
       setDone(true);
     }
   }
 
+  function handlePrev() {
+    if (current > 0) {
+      setCurrent(current - 1);
+      setTempSelect(null);
+    }
+  }
+
   function reset() {
-    setCurrent(0); setSelected(null); setAnswers([]); setSubmitted(false); setDone(false);
+    setCurrent(0); 
+    setTempSelect(null); 
+    let newQuestions = activeQuestions;
+    if (randomizeCount) {
+      newQuestions = [...questions].sort(() => 0.5 - Math.random()).slice(0, randomizeCount);
+      setActiveQuestions(newQuestions);
+    }
+    setAnswers(Array(newQuestions.length).fill(null)); 
+    setDone(false);
   }
 
   if (done) {
-    const pct = Math.round((score / questions.length) * 100);
+    const pct = Math.round((score / activeQuestions.length) * 100);
     return (
       <div style={{ textAlign: "center", padding: "2rem" }}>
         <div style={{ fontSize: 64, marginBottom: "0.5rem" }}>{pct >= 70 ? "🎉" : "📚"}</div>
-        <h3 style={{ fontSize: 22, fontWeight: 600, margin: "0 0 0.5rem", color: COLORS.text }}>Score: {score}/{questions.length}</h3>
+        <h3 style={{ fontSize: 22, fontWeight: 600, margin: "0 0 0.5rem", color: COLORS.text }}>Score: {score}/{activeQuestions.length}</h3>
         <p style={{ color: COLORS.muted, marginBottom: "1.5rem" }}>{pct >= 70 ? "Excellent work! You have a strong understanding." : "Keep studying — review the Theory section."}</p>
         <div style={{ background: COLORS.surface, borderRadius: 12, padding: "1rem", marginBottom: "1.5rem", border: `1px solid ${COLORS.borderLight}` }}>
           <div style={{ height: 12, borderRadius: 8, background: "rgba(0,0,0,0.3)", overflow: "hidden" }}>
@@ -135,14 +163,16 @@ function Quiz({ questions, title }) {
     );
   }
 
-  const q = questions[current];
-  const isCorrect = submitted && selected === q.ans;
+  const q = activeQuestions[current];
+  const isSubmitted = answers[current] !== null;
+  const selected = isSubmitted ? answers[current] : tempSelect;
+  const isCorrect = isSubmitted && selected === q.ans;
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-        <span style={{ fontSize: 13, color: COLORS.muted, fontWeight: 500 }}>Question {current + 1} of {questions.length}</span>
-        <span style={{ fontSize: 13, color: COLORS.muted }}>Score: {score}/{answers.length}</span>
+        <span style={{ fontSize: 13, color: COLORS.muted, fontWeight: 500 }}>Question {current + 1} of {activeQuestions.length}</span>
+        <span style={{ fontSize: 13, color: COLORS.muted }}>Answered: {answeredCount}/{activeQuestions.length}</span>
       </div>
       <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "1rem 1.25rem", marginBottom: "1.5rem" }}>
         <p style={{ margin: 0, fontWeight: 500, lineHeight: 1.6, color: COLORS.text }}>{q.q}</p>
@@ -152,30 +182,38 @@ function Quiz({ questions, title }) {
           let borderColor = COLORS.border;
           let bg = COLORS.surface;
           let textColor = COLORS.text;
-          if (submitted) {
+          if (isSubmitted) {
             if (i === q.ans) { borderColor = "#10b981"; bg = "rgba(16, 185, 129, 0.1)"; textColor = "#34d399"; }
             else if (i === selected && i !== q.ans) { borderColor = "#ef4444"; bg = "rgba(239, 68, 68, 0.1)"; textColor = "#f87171"; }
           } else if (selected === i) {
             borderColor = COLORS.accent; bg = "rgba(129, 140, 248, 0.15)";
           }
           return (
-            <button key={i} onClick={() => !submitted && setSelected(i)} style={{ textAlign: "left", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, background: bg, color: textColor, cursor: submitted ? "default" : "pointer", fontSize: 14, lineHeight: 1.5, transition: "all 0.15s" }}>
-              <span style={{ fontWeight: 600, marginRight: 8, color: submitted && i !== q.ans && i !== selected ? COLORS.muted : textColor }}>{String.fromCharCode(65 + i)}.</span>{opt}
+            <button key={i} onClick={() => !isSubmitted && setTempSelect(i)} style={{ textAlign: "left", padding: "12px 16px", borderRadius: 8, border: `1px solid ${borderColor}`, background: bg, color: textColor, cursor: isSubmitted ? "default" : "pointer", fontSize: 14, lineHeight: 1.5, transition: "all 0.15s" }}>
+              <span style={{ fontWeight: 600, marginRight: 8, color: isSubmitted && i !== q.ans && i !== selected ? COLORS.muted : textColor }}>{String.fromCharCode(65 + i)}.</span>{opt}
             </button>
           );
         })}
       </div>
-      {submitted && (
+      {isSubmitted && (
         <div style={{ padding: "10px 14px", borderRadius: 8, background: isCorrect ? "rgba(16, 185, 129, 0.1)" : "rgba(239, 68, 68, 0.1)", border: `1px solid ${isCorrect ? "#10b981" : "#ef4444"}`, marginBottom: "1rem", fontSize: 13, color: isCorrect ? "#34d399" : "#f87171" }}>
           {isCorrect ? "✓ Correct!" : `✗ Incorrect. The correct answer is: ${q.opts[q.ans]}`}
         </div>
       )}
-      <div style={{ display: "flex", gap: 10 }}>
-        {!submitted
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <button onClick={handlePrev} disabled={current === 0} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "transparent", color: current === 0 ? COLORS.borderLight : COLORS.text, cursor: current === 0 ? "not-allowed" : "pointer", fontSize: 14 }}>← Previous</button>
+        
+        {!isSubmitted
           ? <button onClick={handleSubmit} disabled={selected === null} style={{ padding: "10px 20px", borderRadius: 8, border: "none", background: selected !== null ? COLORS.accentHover : COLORS.surface2, color: selected !== null ? "#fff" : COLORS.muted, cursor: selected !== null ? "pointer" : "not-allowed", fontSize: 14, fontWeight: 600, transition: "background 0.15s" }}>Submit Answer</button>
-          : <button onClick={handleNext} style={{ padding: "10px 20px", borderRadius: 8, border: "none", background: COLORS.accentHover, color: "#fff", cursor: "pointer", fontSize: 14, fontWeight: 600 }}>{current < questions.length - 1 ? "Next Question →" : "See Results"}</button>
+          : <button onClick={handleNext} style={{ padding: "10px 20px", borderRadius: 8, border: "none", background: COLORS.accentHover, color: "#fff", cursor: "pointer", fontSize: 14, fontWeight: 600 }}>{current < activeQuestions.length - 1 ? "Next Question →" : "See Results"}</button>
         }
-        <button onClick={reset} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "transparent", color: COLORS.muted, cursor: "pointer", fontSize: 14 }}>Reset</button>
+
+        {!isSubmitted && (
+          <button onClick={handleNext} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "transparent", color: COLORS.text, cursor: "pointer", fontSize: 14 }}>{current < activeQuestions.length - 1 ? "Skip →" : "See Results"}</button>
+        )}
+
+        <div style={{ flex: 1 }}></div>
+        <button onClick={reset} style={{ padding: "10px 16px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: "transparent", color: COLORS.muted, cursor: "pointer", fontSize: 14 }}>Reset Quiz</button>
       </div>
     </div>
   );
@@ -586,17 +624,17 @@ const REFERENCES = () => (
   </div>
 );
 
-export default function App({ onBack }) {
-  const [activeSection, setActiveSection] = useState("Introduction");
+export default function App({ onBack, initialSection = "introduction" }) {
+  const [activeSection, setActiveSection] = useState(initialSection);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const sectionRef = useRef(null);
 
   const sections = {
     Introduction: { component: <INTRO_CONTENT />, desc: "Experiment objectives" },
     Theory: { component: <THEORY_CONTENT />, desc: "Mathematical background" },
-    Pretest: { component: <Quiz questions={pretestQs} title="Pre-Test" />, desc: "Test prior knowledge" },
+    // Pretest: { component: <Quiz questions={pretestQs} title="Pre-Test" />, desc: "Test prior knowledge" },
     Simulator: { component: <SimulatorPanel />, desc: "Interactive computation" },
-    Posttest: { component: <Quiz questions={posttestQs} title="Post-Test" />, desc: "Evaluate your learning" },
+    Test: { component: <Quiz questions={posttestQs} title="Test" />, desc: "Evaluate your learning" },
     References: { component: <REFERENCES />, desc: "Further reading" },
   };
 
